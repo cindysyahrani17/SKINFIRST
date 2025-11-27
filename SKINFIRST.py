@@ -48,31 +48,20 @@ with st.sidebar:
     st.markdown("## ⚙️ SKINFIRST Menu")
     
     # =======================
-    # CSS Sidebar Cokelat
+    # CSS untuk option_menu aktif (klik)
     # =======================
     st.markdown(
         """
         <style>
-        /* Background sidebar */
-        [data-testid="stSidebar"] {
-            background: linear-gradient(180deg, #D2A679, #A3672E);
-        }
-
-        /* Menu item normal */
-        .option-menu li {
-            background-color: transparent;
-            color: #fff;
+        /* Menu item aktif di option_menu */
+        .option-menu li.active {
+            background-color: #A3672E !important;  /* cokelat */
+            color: #fff !important;
         }
 
         /* Menu item hover */
         .option-menu li:hover {
-            background-color: #B36B2B !important;
-            color: #fff !important;
-        }
-
-        /* Menu item aktif */
-        .option-menu li.active {
-            background-color: #8B4C1E !important;
+            background-color: #B36B2B !important;  /* cokelat lebih terang */
             color: #fff !important;
         }
         </style>
