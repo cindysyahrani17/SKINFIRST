@@ -44,30 +44,35 @@ def preprocess(img):
 # =======================
 # SIDEBAR MENU
 # =======================
+from streamlit_option_menu import option_menu
+
 with st.sidebar:
     st.markdown("## ⚙️ SKINFIRST Menu")
     
-    # =======================
-    # CSS untuk option_menu aktif (klik)
-    # =======================
-    st.markdown(
-        """
-        <style>
-        /* Menu item aktif di option_menu */
-        .option-menu li.active {
-            background-color: #A3672E !important;  /* cokelat */
-            color: #fff !important;
+    selected = option_menu(
+        menu_title=None,
+        options=["Home", "Classification", "Kritik & Saran", "About Us"],
+        icons=["house", "folder", "pencil", "info-circle"],
+        menu_icon="cast",
+        default_index=0,
+        styles={
+            "container": {"padding": "0!important", "background-color": "#ffffff"},  # sidebar putih
+            "icon": {"color": "black", "font-size": "18px"},  # icon hitam
+            "nav-link": {
+                "font-size": "16px",
+                "text-align": "left",
+                "margin":"0px",
+                "color": "black",
+                "padding": "10px",
+            },
+            "nav-link-selected": {
+                "background-color": "#A3672E",  # warna cokelat saat dipilih
+                "color": "white",
+                "font-weight": "bold",
+            },
         }
-
-        /* Menu item hover */
-        .option-menu li:hover {
-            background-color: #B36B2B !important;  /* cokelat lebih terang */
-            color: #fff !important;
-        }
-        </style>
-        """,
-        unsafe_allow_html=True,
     )
+
 
     # =======================
     # Sidebar menu option
