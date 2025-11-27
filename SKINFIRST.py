@@ -45,34 +45,22 @@ def preprocess(img):
 # SIDEBAR MENU
 # =======================
 from streamlit_option_menu import option_menu
+from streamlit_option_menu import option_menu
 
-with st.sidebar:
-    st.markdown("## ⚙️ SKINFIRST Menu")
-    
-    selected = option_menu(
-        menu_title=None,
-        options=["Home", "Classification", "Kritik & Saran", "About Us"],
-        icons=["house", "folder", "pencil", "info-circle"],
-        menu_icon="cast",
-        default_index=0,
-        styles={
-            "container": {"padding": "0!important", "background-color": "#ffffff"},  # sidebar putih
-            "icon": {"color": "black", "font-size": "18px"},  # icon hitam
-            "nav-link": {
-                "font-size": "16px",
-                "text-align": "left",
-                "margin":"0px",
-                "color": "black",
-                "padding": "10px",
-            },
-            "nav-link-selected": {
-                "background-color": "#A3672E",  # warna cokelat saat dipilih
-                "color": "white",
-                "font-weight": "bold",
-            },
-        }
-    )
-
+selected = option_menu(
+    menu_title="⚙️ SKINFIRST Menu",
+    options=["Home", "Classification", "Kritik & Saran", "About Us"],
+    icons=["house", "folder", "pencil", "info-circle"],
+    menu_icon="cast",
+    default_index=0,
+    orientation="vertical",  # sidebar mode
+    styles={
+        "container": {"padding": "0!important", "background-color": "#ffffff"},
+        "icon": {"color": "black", "font-size": "18px"},
+        "nav-link": {"font-size": "16px", "text-align": "left", "margin":"0px", "color": "black", "padding": "10px"},
+        "nav-link-selected": {"background-color": "#A3672E", "color": "white", "font-weight": "bold"},
+    }
+)
 
     # =======================
     # Sidebar menu option
