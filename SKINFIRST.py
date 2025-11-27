@@ -1,27 +1,14 @@
-#SKINFIRST - Streamlit App
 import streamlit as st
 from tensorflow.keras.models import load_model
 from tensorflow.keras.preprocessing import image
 import numpy as np
-import pandas as pd
 import os
-import matplotlib.pyplot as plt
 
-# =========================
-# CONFIG
-# =========================
-st.set_page_config(page_title="SKINFIRST", page_icon="💉", layout="wide")
+# =======================
+# Path model
+# =======================
+MODEL_PATH = "models/skin10_mobilenet.keras"
 
-MODEL_PATH = "D:/SEMESTER 3/PKM/skin10_mobilenet.keras"
-CLASS_NAMES = [
-    "Eksim", "Gigitan Serangga", "Jerawat", "Kandidiasis (Infeksi Jamur Candida)",
-    "Kanker Kulit", "Keratosis Seboroik", "Kurap", "Psoriasis",
-    "Tumor Jinak Kulit", "Vitiligo"
-]
-
-# =========================
-# LOAD MODEL
-# =========================
 @st.cache_resource
 def load_skin_model():
     model = load_model(MODEL_PATH)
@@ -29,89 +16,71 @@ def load_skin_model():
 
 model = load_skin_model()
 
-# =========================
-# SIDEBAR MENU
-# =========================
+# =======================
+# Judul Aplikasi
+# =======================
+st.title("SKINFIRST")
+st.write("Aplikasi klasifikasi penyakit kulit berbasis AI")
+
+# =======================
+# Sidebar menu
+# =======================
 menu = ["Home", "Classification", "Kritik & Saran", "About Us"]
 choice = st.sidebar.selectbox("Menu", menu)
 
-# =========================
-# HOME PAGE
-# =========================
+# =======================
+# Home
+# =======================
 if choice == "Home":
-    st.title("💉 SKINFIRST")
-    st.markdown("""
-    Selamat datang di SKINFIRST!  
-    Aplikasi ini dapat membantu memprediksi penyakit kulit dari gambar.
-    
-    **Fitur:**  
-    - Upload foto kulit
-    - Prediksi penyakit kulit
-    - Statistik probabilitas tiap kelas
-    - Kritik & saran
+    st.header("Selamat Datang di SKINFIRST!")
+    st.write("""
+        SKINFIRST adalah aplikasi AI untuk membantu mengklasifikasi penyakit kulit.
+        Upload foto kulit, dan sistem akan memprediksi kemungkinan penyakitnya.
     """)
-    st.image("https://images.unsplash.com/photo-1588776814546-00c7967c5ff0?auto=format&fit=crop&w=800&q=80", use_column_width=True)
 
-# =========================
-# CLASSIFICATION PAGE
-# =========================
+# =======================
+# Classification
+# =======================
 elif choice == "Classification":
-    st.title("📷 Skin Classification")
-    uploaded_file = st.file_uploader("Upload gambar kulit", type=["jpg", "jpeg", "png"])
+    st.header("Upload Gambar Kulit Anda")
+    uploaded_file = st.file_uploader("Pilih gambar...", type=["jpg", "jpeg", "png"])
     
-    if uploaded_file:
-        st.image(uploaded_file, caption="Gambar untuk prediksi", use_column_width=True)
+    if uploaded_file is not None:
+        st.image(uploaded_file, caption='Gambar Anda', use_column_width=True)
         
-        # Load image
+        # Preprocessing
         img = image.load_img(uploaded_file, target_size=(224,224))
-        x = image.img_to_array(img)
-        x = np.expand_dims(x, axis=0)/255.0
+        img_array = image.img_to_array(img)
+        img_array = np.expand_dims(img_array, axis=0)
+        img_array /= 255.0
         
-        # Prediction with spinner
-        with st.spinner("Sedang memprediksi..."):
-            preds = model.predict(x)
-            class_idx = np.argmax(preds)
-            confidence = preds[0][class_idx]
-            st.success(f"Hasil Prediksi: **{CLASS_NAMES[class_idx]}** ({confidence*100:.2f}%)")
-            
-            # Probabilitas semua kelas
-            st.subheader("Probabilitas tiap kelas:")
-            prob_df = pd.DataFrame(preds, columns=CLASS_NAMES)
-            st.bar_chart(prob_df.T)
+        # Prediksi
+        pred = model.predict(img_array)
+        classes = ["Eksim", "Gigitan Serangga", "Jerawat",
+                   "Kandidiasis (Infeksi Jamur Candida)", "Kanker Kulit",
+                   "Keratosis Seboroik", "Kurap", "Psoriasis",
+                   "Tumor Jinak Kulit", "Vitiligo"]
+        class_idx = np.argmax(pred)
+        confidence = pred[0][class_idx]
+        
+        st.write(f"Prediksi: **{classes[class_idx]}**")
+        st.write(f"Confidence: {confidence*100:.2f}%")
 
-# =========================
-# KRITIK & SARAN PAGE
-# =========================
+# =======================
+# Kritik & Saran
+# =======================
 elif choice == "Kritik & Saran":
-    st.title("✍ Kritik & Saran")
-    with st.form("feedback_form"):
-        nama = st.text_input("Nama")
-        kritik = st.text_area("Kritik / Saran")
-        submitted = st.form_submit_button("Kirim")
-        if submitted:
-            df_path = "feedback.csv"
-            feedback_df = pd.DataFrame([[nama, kritik]], columns=["Nama", "Kritik/Saran"])
-            if os.path.exists(df_path):
-                feedback_df.to_csv(df_path, mode='a', header=False, index=False)
-            else:
-                feedback_df.to_csv(df_path, index=False)
-            st.success("Terima kasih atas feedbacknya!")
+    st.header("Kritik & Saran")
+    feedback = st.text_area("Tulis kritik atau saran Anda di sini:")
+    if st.button("Kirim"):
+        st.success("Terima kasih atas kritik & saran Anda!")
 
-# =========================
-# ABOUT US PAGE
-# =========================
+# =======================
+# About Us
+# =======================
 elif choice == "About Us":
-    st.title("👨‍💻 About Us")
-    st.markdown("""
-    **SKINFIRST Team**  
-    - Nama 1 (Developer)  
-    - Nama 2 (Designer)  
-    - Nama 3 (Tester)  
-
-    **Kontak:**  
-    - Email: skinfo_app@example.com  
-    - GitHub: [SKINFIRST](https://github.com)
-    
-    **Disclaimer:**  
-    Hasil prediksi hanya bersifat **informasi**, bukan pengganti konsultasi dokter.
+    st.header("About Us")
+    st.write("""
+        SKINFIRST dibuat oleh tim PKM UNDIP. 
+        Tujuannya adalah membantu masyarakat dalam mendeteksi penyakit kulit secara dini menggunakan AI.
     """)
