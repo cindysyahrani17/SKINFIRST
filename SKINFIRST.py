@@ -3,12 +3,24 @@ from tensorflow.keras.models import load_model
 from tensorflow.keras.preprocessing import image
 import numpy as np
 import os
+import gdown
 
 # =======================
 # Path model
 # =======================
-MODEL_PATH = "models/skin10_mobilenet.keras"
+MODEL_PATH = "skin10_mobilenet.keras"
+FILE_ID = "1G0X-463Ni0b1vYga_AhuKWTdQ47nkOwI"  # File ID Google Drive
+URL = f"https://drive.google.com/uc?id={FILE_ID}&export=download"
 
+# Download model jika belum ada
+if not os.path.exists(MODEL_PATH):
+    st.info("Downloading model, please wait...")
+    gdown.download(URL, MODEL_PATH, quiet=False)
+    st.success("Model downloaded!")
+
+# =======================
+# Load model
+# =======================
 @st.cache_resource
 def load_skin_model():
     model = load_model(MODEL_PATH)
@@ -56,10 +68,12 @@ elif choice == "Classification":
         
         # Prediksi
         pred = model.predict(img_array)
-        classes = ["Eksim", "Gigitan Serangga", "Jerawat",
-                   "Kandidiasis (Infeksi Jamur Candida)", "Kanker Kulit",
-                   "Keratosis Seboroik", "Kurap", "Psoriasis",
-                   "Tumor Jinak Kulit", "Vitiligo"]
+        classes = [
+            "Eksim", "Gigitan Serangga", "Jerawat",
+            "Kandidiasis (Infeksi Jamur Candida)", "Kanker Kulit",
+            "Keratosis Seboroik", "Kurap", "Psoriasis",
+            "Tumor Jinak Kulit", "Vitiligo"
+        ]
         class_idx = np.argmax(pred)
         confidence = pred[0][class_idx]
         
