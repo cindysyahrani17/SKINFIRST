@@ -46,6 +46,43 @@ def preprocess(img):
 # =======================
 with st.sidebar:
     st.markdown("## ⚙️ SKINFIRST Menu")
+    
+    # =======================
+    # CSS Sidebar Cokelat
+    # =======================
+    st.markdown(
+        """
+        <style>
+        /* Background sidebar */
+        [data-testid="stSidebar"] {
+            background: linear-gradient(180deg, #D2A679, #A3672E);
+        }
+
+        /* Menu item normal */
+        .option-menu li {
+            background-color: transparent;
+            color: #fff;
+        }
+
+        /* Menu item hover */
+        .option-menu li:hover {
+            background-color: #B36B2B !important;
+            color: #fff !important;
+        }
+
+        /* Menu item aktif */
+        .option-menu li.active {
+            background-color: #8B4C1E !important;
+            color: #fff !important;
+        }
+        </style>
+        """,
+        unsafe_allow_html=True,
+    )
+
+    # =======================
+    # Sidebar menu option
+    # =======================
     selected = option_menu(
         menu_title=None,
         options=["Home", "Classification", "Kritik & Saran", "About Us"],
@@ -53,6 +90,7 @@ with st.sidebar:
         menu_icon="cast",
         default_index=0,
     )
+
 
 # =======================
 # HOME PAGE
@@ -99,7 +137,7 @@ if selected == "Home":
         font-size: 42px;
         font-weight: bold;
         color: #5C4033;
-        animation: blurFadeIn 2.5s ease-in-out;
+        animation: blurFadeIn 3s ease-in-out;
     }
     @keyframes blurFadeIn {
         0% {opacity: 0; filter: blur(20px);}
@@ -121,7 +159,7 @@ if selected == "Home":
     st.markdown("""
     <div class="centered">
         <div class="logo-text">SKINFIRST 🩺</div>
-        <p class="slogan">Aplikasi AI untuk mendeteksi penyakit kulit secara dini</p>
+        <p class="slogan">PROTECT YOUR SKIN FIRST</p>
     </div>
     """, unsafe_allow_html=True)
 
@@ -175,7 +213,6 @@ elif selected == "Kritik & Saran":
 elif selected == "About Us":
     st.title("ℹ️ About SKINFIRST")
     st.markdown("""
-    **SKINFIRST** dibuat oleh tim PKM UNDIP.  
-    Tujuannya membantu masyarakat mendeteksi penyakit kulit secara dini menggunakan AI.  
-    ❤️🩺👩‍⚕️👨‍⚕️  
+    **SKINFIRST** dibuat oleh tim PKM Universitas Diponegoro.  
+    Sistem Deteksi Dini Penyakit Kulit Masyarakat Indonesia ❤️🩺👩‍⚕️👨‍⚕️  
     """)
