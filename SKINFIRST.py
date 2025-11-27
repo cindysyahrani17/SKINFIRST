@@ -32,32 +32,6 @@ classes = ["Eksim", "Gigitan Serangga", "Jerawat",
            "Tumor Jinak Kulit", "Vitiligo"]
 
 # =======================
-# DO & DON'T TIPS
-# =======================
-tips = {
-    "Eksim": {"Do": "Gunakan pelembab secara rutin, hindari sabun keras.", 
-              "Don't": "Jangan menggaruk kulit yang gatal."},
-    "Gigitan Serangga": {"Do": "Cuci area gigitan, gunakan krim anti gatal.", 
-                         "Don't": "Jangan digaruk atau dicubit terlalu keras."},
-    "Jerawat": {"Do": "Cuci muka dua kali sehari, gunakan obat topikal.", 
-                "Don't": "Jangan memencet jerawat."},
-    "Kandidiasis (Infeksi Jamur Candida)": {"Do": "Jaga area tetap kering dan bersih.", 
-                                           "Don't": "Jangan memakai pakaian lembap terlalu lama."},
-    "Kanker Kulit": {"Do": "Segera konsultasikan ke dokter kulit.", 
-                     "Don't": "Jangan mengabaikan luka atau benjolan baru."},
-    "Keratosis Seboroik": {"Do": "Gunakan pelembab, konsultasi dermatolog.", 
-                           "Don't": "Jangan mencoba mengelupas sendiri."},
-    "Kurap": {"Do": "Oleskan obat antijamur sesuai resep.", 
-              "Don't": "Jangan berbagi pakaian atau handuk."},
-    "Psoriasis": {"Do": "Gunakan krim yang diresepkan dokter, mandi air hangat.", 
-                  "Don't": "Jangan stres berlebihan dan garuk kulit."},
-    "Tumor Jinak Kulit": {"Do": "Pantau pertumbuhan, konsultasi dokter jika berubah.", 
-                           "Don't": "Jangan dioperasi sendiri atau dipencet."},
-    "Vitiligo": {"Do": "Gunakan tabir surya, ikuti terapi dokter.", 
-                 "Don't": "Jangan paparan sinar matahari berlebihan."}
-}
-
-# =======================
 # IMAGE PREPROCESS
 # =======================
 def preprocess(img):
@@ -66,6 +40,52 @@ def preprocess(img):
     img_array = np.expand_dims(img_array, axis=0)
     img_array /= 255.0
     return img_array
+
+# =======================
+# DO & DON'T TIPS
+# =======================
+tips = {
+    "Eksim": {
+        "Do": "Gunakan pelembab, hindari sabun keras, mandi air hangat.",
+        "Dont": "Jangan garuk area yang gatal, hindari pemicu alergi."
+    },
+    "Gigitan Serangga": {
+        "Do": "Bersihkan dengan antiseptik, gunakan lotion anti-gatal.",
+        "Dont": "Jangan digaruk, jangan dipecahkan lepuhnya."
+    },
+    "Jerawat": {
+        "Do": "Cuci muka 2x sehari, gunakan skincare non-komedogenik.",
+        "Dont": "Jangan memencet jerawat, hindari kosmetik berat."
+    },
+    "Kandidiasis (Infeksi Jamur Candida)": {
+        "Do": "Jaga area tetap kering, gunakan obat antijamur.",
+        "Dont": "Jangan pakai pakaian lembap, jangan digaruk."
+    },
+    "Kanker Kulit": {
+        "Do": "Segera konsultasi dokter, lindungi kulit dari matahari.",
+        "Dont": "Jangan abaikan luka atau benjolan yang tidak sembuh."
+    },
+    "Keratosis Seboroik": {
+        "Do": "Gunakan pelembab, konsultasi dokter bila mengganggu.",
+        "Dont": "Jangan digaruk, jangan dicabut paksa."
+    },
+    "Kurap": {
+        "Do": "Gunakan obat antijamur sesuai anjuran dokter.",
+        "Dont": "Jangan berbagi handuk, jangan digaruk."
+    },
+    "Psoriasis": {
+        "Do": "Gunakan krim steroid ringan, mandi air hangat.",
+        "Dont": "Jangan garuk berlebihan, hindari stres berlebih."
+    },
+    "Tumor Jinak Kulit": {
+        "Do": "Pantau perkembangan, konsultasi dokter bila membesar.",
+        "Dont": "Jangan dicabut sendiri, jangan dipecahkan."
+    },
+    "Vitiligo": {
+        "Do": "Lindungi kulit dari matahari, konsultasi dermatolog.",
+        "Dont": "Jangan menggosok area kulit, jangan sembarangan pakai krim."
+    },
+}
 
 # =======================
 # HORIZONTAL NAVBAR
@@ -137,7 +157,7 @@ elif selected == "Classification":
         # DO & DON'T
         st.subheader("💡 Tips Perawatan")
         st.markdown(f"**Do:** {tips[disease]['Do']}")
-        st.markdown(f"**Don't:** {tips[disease][\"Don't\"]}")
+        st.markdown(f"""**Don't:** {tips[disease]["Don't"]}""")
 
 # =======================
 # KRITIK & SARAN PAGE
