@@ -1,10 +1,21 @@
 import streamlit as st
+from streamlit_option_menu import option_menu
 from tensorflow.keras.models import load_model
 from tensorflow.keras.preprocessing import image
 import numpy as np
+from PIL import Image
+import pandas as pd
+import os
+from datetime import datetime
+import time
 
 # =======================
-# Path model
+# PAGE CONFIG
+# =======================
+st.set_page_config(page_title="SKINFIRST", page_icon="🩺", layout="wide")
+
+# =======================
+# LOAD MODEL
 # =======================
 MODEL_PATH = "skin10_mobilenet.keras"
 
@@ -15,110 +26,156 @@ def load_skin_model():
 
 model = load_skin_model()
 
-# =======================
-# Sidebar menu
-# =======================
-menu = ["Home", "Classification", "Kritik & Saran", "About Us"]
-choice = st.sidebar.selectbox("Menu", menu)
+classes = ["Eksim", "Gigitan Serangga", "Jerawat",
+           "Kandidiasis (Infeksi Jamur Candida)", "Kanker Kulit",
+           "Keratosis Seboroik", "Kurap", "Psoriasis",
+           "Tumor Jinak Kulit", "Vitiligo"]
 
 # =======================
-# Home dengan animasi blur
+# IMAGE PREPROCESS
 # =======================
-if choice == "Home":
-    st.components.v1.html("""
-    <html>
-    <head>
+def preprocess(img):
+    img = img.resize((224,224))
+    img_array = image.img_to_array(img)
+    img_array = np.expand_dims(img_array, axis=0)
+    img_array /= 255.0
+    return img_array
+
+# =======================
+# SIDEBAR MENU
+# =======================
+with st.sidebar:
+    st.markdown("## ⚙️ SKINFIRST Menu")
+    selected = option_menu(
+        menu_title=None,
+        options=["Home", "Classification", "Kritik & Saran", "About Us"],
+        icons=["house", "folder", "pencil", "info-circle"],
+        menu_icon="cast",
+        default_index=0,
+    )
+
+# =======================
+# HOME PAGE
+# =======================
+if selected == "Home":
+    st.markdown("""
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;700&display=swap');
-        body {
-            background-color: #FFF4E1;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 90vh;
-            font-family: 'Poppins', sans-serif;
-            color: #333;
-        }
-        .container {
-            text-align: center;
-            animation: fadeIn 3s ease forwards;
-        }
-        .title {
-            font-size: 5em;
-            font-weight: 700;
-            color: #FF8C42;
-            opacity: 0;
-            animation: blurFade 2s 0.5s forwards;
-        }
-        .subtitle {
-            font-size: 1.5em;
-            margin-top: 20px;
-            opacity: 0;
-            animation: blurFade 2s 2.5s forwards;
-        }
-        @keyframes blurFade {
-            0% { opacity:0; filter: blur(10px); }
-            100% { opacity:1; filter: blur(0); }
-        }
-        @keyframes fadeIn {
-            from { opacity: 0; }
-            to { opacity: 1; }
-        }
+    @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;700&display=swap');
+    body {
+        background-color: #FFF4E1;
+        font-family: 'Poppins', sans-serif;
+    }
+    .centered {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        height: 80vh;
+        text-align: center;
+        overflow: hidden;
+        position: relative;
+    }
+    .logo-text {
+        font-size: 70px;
+        font-weight: 800;
+        background: linear-gradient(90deg, #A0522D, #D2B48C);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        letter-spacing: 3px;
+        opacity: 0;
+        animation: blurFadeIn 3s ease-in-out forwards;
+        animation-delay: 1.5s;
+    }
+    .slogan {
+        font-size: 22px;
+        color: #5C4033;
+        margin-top: 20px;
+        font-weight: bold;
+        opacity: 0;
+        animation: blurFadeIn 3s ease-in-out forwards;
+        animation-delay: 3.5s;
+    }
+    .welcome {
+        font-size: 42px;
+        font-weight: bold;
+        color: #5C4033;
+        animation: blurFadeIn 2.5s ease-in-out;
+    }
+    @keyframes blurFadeIn {
+        0% {opacity: 0; filter: blur(20px);}
+        100% {opacity: 1; filter: blur(0);}
+    }
     </style>
-    </head>
-    <body>
-        <div class="container">
-            <div class="title">SKINFIRST 🩺</div>
-            <div class="subtitle">Aplikasi AI untuk membantu deteksi penyakit kulit secara dini</div>
+    """, unsafe_allow_html=True)
+
+    container = st.empty()
+    with container:
+        st.markdown("""
+        <div class="centered">
+            <div class="welcome">Welcome 👋</div>
         </div>
-    </body>
-    </html>
-    """, height=600)
+        """, unsafe_allow_html=True)
+    time.sleep(2)
+
+    container.empty()
+    st.markdown("""
+    <div class="centered">
+        <div class="logo-text">SKINFIRST 🩺</div>
+        <p class="slogan">Aplikasi AI untuk mendeteksi penyakit kulit secara dini</p>
+    </div>
+    """, unsafe_allow_html=True)
 
 # =======================
-# Classification
+# CLASSIFICATION PAGE
 # =======================
-elif choice == "Classification":
-    st.header("Upload Gambar Kulit Anda")
+elif selected == "Classification":
+    st.title("🖼️ Upload Gambar Kulit Anda")
     uploaded_file = st.file_uploader("Pilih gambar...", type=["jpg", "jpeg", "png"])
-    
+
     if uploaded_file is not None:
-        st.image(uploaded_file, caption='Gambar Anda', use_column_width=True)
-        
-        # Preprocessing
-        img = image.load_img(uploaded_file, target_size=(224,224))
-        img_array = image.img_to_array(img)
-        img_array = np.expand_dims(img_array, axis=0)
-        img_array /= 255.0
-        
-        # Prediksi
+        img = Image.open(uploaded_file).convert("RGB")
+        st.image(img, caption="Gambar Anda", use_column_width=True)
+
+        img_array = preprocess(img)
         pred = model.predict(img_array)
-        classes = ["Eksim", "Gigitan Serangga", "Jerawat",
-                   "Kandidiasis (Infeksi Jamur Candida)", "Kanker Kulit",
-                   "Keratosis Seboroik", "Kurap", "Psoriasis",
-                   "Tumor Jinak Kulit", "Vitiligo"]
         class_idx = np.argmax(pred)
         confidence = pred[0][class_idx]
-        
-        st.write(f"Prediksi: **{classes[class_idx]}**")
-        st.write(f"Confidence: {confidence*100:.2f}%")
+
+        st.success(f"Prediksi: **{classes[class_idx]}**")
+        st.info(f"Confidence: {confidence*100:.2f}%")
 
 # =======================
-# Kritik & Saran
+# KRITIK & SARAN
 # =======================
-elif choice == "Kritik & Saran":
-    st.header("Kritik & Saran")
-    feedback = st.text_area("Tulis kritik atau saran Anda di sini:")
+elif selected == "Kritik & Saran":
+    st.title("📩 Kritik & Saran")
+    feedback = st.text_area("Tulis kritik/saran Anda di sini...")
+
     if st.button("Kirim"):
-        st.success("Terima kasih atas kritik & saran Anda! 😊")
+        if feedback.strip() == "":
+            st.warning("⚠️ Tolong isi dulu kritik/sarannya.")
+        else:
+            new_data = pd.DataFrame([{
+                "waktu": datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
+                "feedback": feedback
+            }])
+
+            if os.path.exists("feedback.csv"):
+                old_data = pd.read_csv("feedback.csv")
+                all_data = pd.concat([old_data, new_data], ignore_index=True)
+            else:
+                all_data = new_data
+
+            all_data.to_csv("feedback.csv", index=False)
+            st.success("✅ Terima kasih! Kritik & saran Anda sudah tersimpan.")
 
 # =======================
-# About Us
+# ABOUT US
 # =======================
-elif choice == "About Us":
-    st.header("About Us")
-    st.write("""
-        SKINFIRST dibuat oleh tim PKM UNDIP.  
-        Tujuannya membantu masyarakat mendeteksi penyakit kulit secara dini menggunakan AI.  
-        ❤️👩‍⚕️👨‍⚕️
+elif selected == "About Us":
+    st.title("ℹ️ About SKINFIRST")
+    st.markdown("""
+    **SKINFIRST** dibuat oleh tim PKM UNDIP.  
+    Tujuannya membantu masyarakat mendeteksi penyakit kulit secara dini menggunakan AI.  
+    ❤️🩺👩‍⚕️👨‍⚕️  
     """)
