@@ -32,6 +32,32 @@ classes = ["Eksim", "Gigitan Serangga", "Jerawat",
            "Tumor Jinak Kulit", "Vitiligo"]
 
 # =======================
+# DO & DON'T TIPS
+# =======================
+tips_dict = {
+    "Eksim": {"Do": "Gunakan pelembab, mandi dengan air hangat, pakaian longgar.",
+              "Don't": "Jangan menggaruk kulit, hindari sabun keras."},
+    "Gigitan Serangga": {"Do": "Cuci area, gunakan krim anti-gatal.",
+                         "Don't": "Jangan digaruk, hindari krim keras."},
+    "Jerawat": {"Do": "Cuci wajah 2x sehari, pakai produk non-komedogenik.",
+                "Don't": "Jangan memencet jerawat, hindari kosmetik berminyak."},
+    "Kandidiasis (Infeksi Jamur Candida)": {"Do": "Jaga area tetap kering, pakai pakaian longgar.",
+                                           "Don't": "Jangan pakai pakaian lembap, hindari obat jamur tanpa resep."},
+    "Kanker Kulit": {"Do": "Segera konsultasi dokter, lindungi kulit dari matahari.",
+                     "Don't": "Jangan abaikan lesi yang berubah, jangan mengobati sendiri."},
+    "Keratosis Seboroik": {"Do": "Cuci kulit lembut, konsultasi dokter jika gatal.",
+                           "Don't": "Jangan menggaruk atau mencoba menghilangkan sendiri."},
+    "Kurap": {"Do": "Gunakan obat anti-jamur, jaga kebersihan kulit.",
+              "Don't": "Jangan menggaruk, hindari berbagi handuk."},
+    "Psoriasis": {"Do": "Gunakan pelembab, hindari stres, mandi dengan air hangat.",
+                  "Don't": "Jangan menggaruk kulit, hindari sabun keras."},
+    "Tumor Jinak Kulit": {"Do": "Konsultasi dokter kulit, monitor perubahan.",
+                           "Don't": "Jangan mencoba memotong sendiri."},
+    "Vitiligo": {"Do": "Lindungi kulit dari sinar matahari, gunakan tabir surya.",
+                 "Don't": "Jangan menggosok area kulit, hindari kosmetik yang mengiritasi."}
+}
+
+# =======================
 # IMAGE PREPROCESS
 # =======================
 def preprocess(img):
@@ -50,7 +76,7 @@ selected = option_menu(
     icons=["house", "folder", "pencil", "info-circle"],
     menu_icon="cast",
     default_index=0,
-    orientation="horizontal",  # NAVBAR DI ATAS
+    orientation="horizontal",
     styles={
         "container": {"padding": "0!important", "background-color": "#FFF4E1"},
         "icon": {"color": "#5C4033", "font-size": "18px"},
@@ -104,8 +130,15 @@ elif selected == "Classification":
         pred = model.predict(img_array)
         class_idx = np.argmax(pred)
         confidence = pred[0][class_idx]
-        st.success(f"Prediksi: **{classes[class_idx]}**")
+        pred_class = classes[class_idx]
+        st.success(f"Prediksi: **{pred_class}**")
         st.info(f"Confidence: {confidence*100:.2f}%")
+
+        # Tampilkan Do & Don't
+        tips = tips_dict.get(pred_class)
+        if tips:
+            st.markdown(f"**Do:** {tips['Do']}")
+            st.markdown(f"**Don't:** {tips['Don't']}")
 
 # =======================
 # KRITIK & SARAN PAGE
