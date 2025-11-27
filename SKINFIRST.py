@@ -1,26 +1,16 @@
 import streamlit as st
+from streamlit.components.v1 import html
 from tensorflow.keras.models import load_model
 from tensorflow.keras.preprocessing import image
 import numpy as np
-import os
-import gdown
+
+st.set_page_config(page_title="SKINFIRST", page_icon="🧴")
 
 # =======================
-# Path model
+# Path & Model
 # =======================
 MODEL_PATH = "skin10_mobilenet.keras"
-FILE_ID = "1G0X-463Ni0b1vYga_AhuKWTdQ47nkOwI"  # File ID Google Drive
-URL = f"https://drive.google.com/uc?id={FILE_ID}&export=download"
 
-# Download model jika belum ada
-if not os.path.exists(MODEL_PATH):
-    st.info("Downloading model, please wait...")
-    gdown.download(URL, MODEL_PATH, quiet=False)
-    st.success("Model downloaded!")
-
-# =======================
-# Load model
-# =======================
 @st.cache_resource
 def load_skin_model():
     model = load_model(MODEL_PATH)
@@ -29,26 +19,65 @@ def load_skin_model():
 model = load_skin_model()
 
 # =======================
-# Judul Aplikasi
-# =======================
-st.title("SKINFIRST")
-st.write("Aplikasi klasifikasi penyakit kulit berbasis AI")
-
-# =======================
-# Sidebar menu
+# Sidebar Menu
 # =======================
 menu = ["Home", "Classification", "Kritik & Saran", "About Us"]
 choice = st.sidebar.selectbox("Menu", menu)
 
 # =======================
-# Home
+# Home with Transition
 # =======================
 if choice == "Home":
-    st.header("Selamat Datang di SKINFIRST!")
-    st.write("""
-        SKINFIRST adalah aplikasi AI untuk membantu mengklasifikasi penyakit kulit.
-        Upload foto kulit, dan sistem akan memprediksi kemungkinan penyakitnya.
-    """)
+    st.header("")  # kosong dulu biar layout rapi
+
+    # HTML + CSS + JS untuk animasi blur + fade in
+    home_html = """
+    <style>
+        body {
+            background-color: #fff5e6;
+            font-family: 'Arial', sans-serif;
+        }
+        .container {
+            text-align: center;
+            margin-top: 100px;
+        }
+        h1 {
+            font-size: 70px;
+            color: #d2691e;
+            filter: blur(10px);
+            opacity: 0;
+            transition: filter 1s ease, opacity 1s ease;
+        }
+        p {
+            font-size: 24px;
+            color: #555;
+            filter: blur(5px);
+            opacity: 0;
+            transition: filter 1s ease, opacity 1s ease;
+        }
+    </style>
+
+    <div class="container">
+        <h1 id="title">SKINFIRST</h1>
+        <p id="desc">Aplikasi AI untuk membantu mengklasifikasi penyakit kulit 💉🩺</p>
+    </div>
+
+    <script>
+        // Step 1: muncul title
+        setTimeout(() => {
+            document.getElementById("title").style.filter = "blur(0px)";
+            document.getElementById("title").style.opacity = "1";
+        }, 500);
+
+        // Step 2: muncul deskripsi setelah title muncul
+        setTimeout(() => {
+            document.getElementById("desc").style.filter = "blur(0px)";
+            document.getElementById("desc").style.opacity = "1";
+        }, 1500);
+    </script>
+    """
+
+    html(home_html, height=400)
 
 # =======================
 # Classification
@@ -60,20 +89,16 @@ elif choice == "Classification":
     if uploaded_file is not None:
         st.image(uploaded_file, caption='Gambar Anda', use_column_width=True)
         
-        # Preprocessing
         img = image.load_img(uploaded_file, target_size=(224,224))
         img_array = image.img_to_array(img)
         img_array = np.expand_dims(img_array, axis=0)
         img_array /= 255.0
         
-        # Prediksi
         pred = model.predict(img_array)
-        classes = [
-            "Eksim", "Gigitan Serangga", "Jerawat",
-            "Kandidiasis (Infeksi Jamur Candida)", "Kanker Kulit",
-            "Keratosis Seboroik", "Kurap", "Psoriasis",
-            "Tumor Jinak Kulit", "Vitiligo"
-        ]
+        classes = ["Eksim", "Gigitan Serangga", "Jerawat",
+                   "Kandidiasis (Infeksi Jamur Candida)", "Kanker Kulit",
+                   "Keratosis Seboroik", "Kurap", "Psoriasis",
+                   "Tumor Jinak Kulit", "Vitiligo"]
         class_idx = np.argmax(pred)
         confidence = pred[0][class_idx]
         
@@ -95,6 +120,6 @@ elif choice == "Kritik & Saran":
 elif choice == "About Us":
     st.header("About Us")
     st.write("""
-        SKINFIRST dibuat oleh tim PKM UNDIP. 
-        Tujuannya adalah membantu masyarakat dalam mendeteksi penyakit kulit secara dini menggunakan AI.
+        SKINFIRST dibuat oleh tim PKM UNDIP.  
+        Tujuannya adalah membantu masyarakat dalam mendeteksi penyakit kulit secara dini menggunakan AI. 💻🧴
     """)
