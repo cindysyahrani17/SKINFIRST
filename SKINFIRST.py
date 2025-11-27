@@ -26,35 +26,38 @@ def load_skin_model():
 
 model = load_skin_model()
 
-classes = ["Eksim", "Gigitan Serangga", "Jerawat",
-           "Kandidiasis (Infeksi Jamur Candida)", "Kanker Kulit",
-           "Keratosis Seboroik", "Kurap", "Psoriasis",
-           "Tumor Jinak Kulit", "Vitiligo"]
+# =======================
+# CLASS NAMES & TIPS
+# =======================
+classes = [
+    "Eksim", "Gigitan Serangga", "Jerawat",
+    "Kandidiasis (Infeksi Jamur Candida)", "Kanker Kulit",
+    "Keratosis Seboroik", "Kurap", "Psoriasis",
+    "Tumor Jinak Kulit", "Vitiligo"
+]
 
-# =======================
-# DO & DON'T TIPS
-# =======================
-tips_dict = {
-    "Eksim": {"Do": "Gunakan pelembab, mandi dengan air hangat, pakaian longgar.",
+# Do & Don't tips untuk tiap penyakit
+tips = {
+    "Eksim": {"Do": "Gunakan pelembab, mandi air hangat, pakai pakaian longgar.",
               "Don't": "Jangan menggaruk kulit, hindari sabun keras."},
-    "Gigitan Serangga": {"Do": "Cuci area, gunakan krim anti-gatal.",
+    "Gigitan Serangga": {"Do": "Bersihkan area, kompres dingin, gunakan salep anti gatal.",
                          "Don't": "Jangan digaruk, hindari krim keras."},
-    "Jerawat": {"Do": "Cuci wajah 2x sehari, pakai produk non-komedogenik.",
-                "Don't": "Jangan memencet jerawat, hindari kosmetik berminyak."},
-    "Kandidiasis (Infeksi Jamur Candida)": {"Do": "Jaga area tetap kering, pakai pakaian longgar.",
-                                           "Don't": "Jangan pakai pakaian lembap, hindari obat jamur tanpa resep."},
-    "Kanker Kulit": {"Do": "Segera konsultasi dokter, lindungi kulit dari matahari.",
-                     "Don't": "Jangan abaikan lesi yang berubah, jangan mengobati sendiri."},
-    "Keratosis Seboroik": {"Do": "Cuci kulit lembut, konsultasi dokter jika gatal.",
-                           "Don't": "Jangan menggaruk atau mencoba menghilangkan sendiri."},
-    "Kurap": {"Do": "Gunakan obat anti-jamur, jaga kebersihan kulit.",
-              "Don't": "Jangan menggaruk, hindari berbagi handuk."},
-    "Psoriasis": {"Do": "Gunakan pelembab, hindari stres, mandi dengan air hangat.",
-                  "Don't": "Jangan menggaruk kulit, hindari sabun keras."},
-    "Tumor Jinak Kulit": {"Do": "Konsultasi dokter kulit, monitor perubahan.",
-                           "Don't": "Jangan mencoba memotong sendiri."},
-    "Vitiligo": {"Do": "Lindungi kulit dari sinar matahari, gunakan tabir surya.",
-                 "Don't": "Jangan menggosok area kulit, hindari kosmetik yang mengiritasi."}
+    "Jerawat": {"Do": "Cuci muka 2x sehari, gunakan produk non-komedogenik.",
+                "Don't": "Jangan memencet jerawat, hindari make-up berat."},
+    "Kandidiasis (Infeksi Jamur Candida)": {"Do": "Jaga area tetap kering, gunakan obat antijamur.",
+                                            "Don't": "Jangan menutup area terlalu lama, hindari pakaian lembab."},
+    "Kanker Kulit": {"Do": "Segera konsultasi ke dokter, lindungi kulit dari matahari.",
+                     "Don't": "Jangan menunda pemeriksaan."},
+    "Keratosis Seboroik": {"Do": "Gunakan pelembab ringan, konsultasi dokter jika gatal.",
+                           "Don't": "Jangan menggaruk atau mengelupas sendiri."},
+    "Kurap": {"Do": "Gunakan obat antijamur sesuai anjuran, jaga kebersihan.",
+              "Don't": "Jangan berbagi handuk, hindari menggaruk."},
+    "Psoriasis": {"Do": "Gunakan pelembab, terapi cahaya sesuai dokter.",
+                  "Don't": "Jangan menggaruk, hindari stres berlebih."},
+    "Tumor Jinak Kulit": {"Do": "Pantau pertumbuhan, konsultasi dokter jika berubah.",
+                           "Don't": "Jangan mencoba menghilangkan sendiri."},
+    "Vitiligo": {"Do": "Gunakan tabir surya, terapi sesuai dokter.",
+                 "Don't": "Jangan menggaruk, hindari trauma kulit."}
 }
 
 # =======================
@@ -93,7 +96,7 @@ if selected == "Home":
     <style>
     @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;700&display=swap');
     body {background-color: #FFF4E1; font-family: 'Poppins', sans-serif;}
-    .centered {display: flex; flex-direction: column; justify-content: center; align-items: center; height: 80vh; text-align: center; overflow: hidden; position: relative;}
+    .centered {display: flex; flex-direction: column; justify-content: center; align-items: center; height: 70vh; text-align: center; overflow: hidden; position: relative;}
     .logo-text {font-size: 70px; font-weight: 800; background: linear-gradient(90deg, #A0522D, #D2B48C); -webkit-background-clip: text; -webkit-text-fill-color: transparent; letter-spacing: 3px; opacity: 0; animation: blurFadeIn 3s ease-in-out forwards; animation-delay: 1.5s;}
     .slogan {font-size: 22px; color: #5C4033; margin-top: 20px; font-weight: bold; opacity: 0; animation: blurFadeIn 3s ease-in-out forwards; animation-delay: 3.5s;}
     .welcome {font-size: 42px; font-weight: bold; color: #5C4033; animation: blurFadeIn 3s ease-in-out;}
@@ -130,15 +133,16 @@ elif selected == "Classification":
         pred = model.predict(img_array)
         class_idx = np.argmax(pred)
         confidence = pred[0][class_idx]
-        pred_class = classes[class_idx]
-        st.success(f"Prediksi: **{pred_class}**")
+        st.success(f"Prediksi: **{classes[class_idx]}**")
         st.info(f"Confidence: {confidence*100:.2f}%")
 
-        # Tampilkan Do & Don't
-        tips = tips_dict.get(pred_class)
-        if tips:
-            st.markdown(f"**Do:** {tips['Do']}")
-            st.markdown(f"**Don't:** {tips['Don't']}")
+        # =======================
+        # DO & DON'T
+        # =======================
+        disease = classes[class_idx]
+        st.markdown("### 💡 Tips Perawatan")
+        st.markdown(f"**Do:** {tips[disease]['Do']}")
+        st.markdown(f"**Don't:** {tips[disease]['Don't']}")
 
 # =======================
 # KRITIK & SARAN PAGE
@@ -171,3 +175,4 @@ elif selected == "About Us":
     **SKINFIRST** dibuat oleh tim PKM Universitas Diponegoro.  
     Sistem Deteksi Dini Penyakit Kulit Masyarakat Indonesia ❤️🩺👩‍⚕️👨‍⚕️  
     """)
+
