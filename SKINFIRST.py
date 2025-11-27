@@ -26,38 +26,35 @@ def load_skin_model():
 
 model = load_skin_model()
 
-# =======================
-# CLASS NAMES & TIPS
-# =======================
-classes = [
-    "Eksim", "Gigitan Serangga", "Jerawat",
-    "Kandidiasis (Infeksi Jamur Candida)", "Kanker Kulit",
-    "Keratosis Seboroik", "Kurap", "Psoriasis",
-    "Tumor Jinak Kulit", "Vitiligo"
-]
+classes = ["Eksim", "Gigitan Serangga", "Jerawat",
+           "Kandidiasis (Infeksi Jamur Candida)", "Kanker Kulit",
+           "Keratosis Seboroik", "Kurap", "Psoriasis",
+           "Tumor Jinak Kulit", "Vitiligo"]
 
-# Do & Don't tips untuk tiap penyakit
+# =======================
+# DO & DON'T TIPS
+# =======================
 tips = {
-    "Eksim": {"Do": "Gunakan pelembab, mandi air hangat, pakai pakaian longgar.",
-              "Don't": "Jangan menggaruk kulit, hindari sabun keras."},
-    "Gigitan Serangga": {"Do": "Bersihkan area, kompres dingin, gunakan salep anti gatal.",
-                         "Don't": "Jangan digaruk, hindari krim keras."},
-    "Jerawat": {"Do": "Cuci muka 2x sehari, gunakan produk non-komedogenik.",
-                "Don't": "Jangan memencet jerawat, hindari make-up berat."},
-    "Kandidiasis (Infeksi Jamur Candida)": {"Do": "Jaga area tetap kering, gunakan obat antijamur.",
-                                            "Don't": "Jangan menutup area terlalu lama, hindari pakaian lembab."},
-    "Kanker Kulit": {"Do": "Segera konsultasi ke dokter, lindungi kulit dari matahari.",
-                     "Don't": "Jangan menunda pemeriksaan."},
-    "Keratosis Seboroik": {"Do": "Gunakan pelembab ringan, konsultasi dokter jika gatal.",
-                           "Don't": "Jangan menggaruk atau mengelupas sendiri."},
-    "Kurap": {"Do": "Gunakan obat antijamur sesuai anjuran, jaga kebersihan.",
-              "Don't": "Jangan berbagi handuk, hindari menggaruk."},
-    "Psoriasis": {"Do": "Gunakan pelembab, terapi cahaya sesuai dokter.",
-                  "Don't": "Jangan menggaruk, hindari stres berlebih."},
-    "Tumor Jinak Kulit": {"Do": "Pantau pertumbuhan, konsultasi dokter jika berubah.",
-                           "Don't": "Jangan mencoba menghilangkan sendiri."},
-    "Vitiligo": {"Do": "Gunakan tabir surya, terapi sesuai dokter.",
-                 "Don't": "Jangan menggaruk, hindari trauma kulit."}
+    "Eksim": {"Do": "Gunakan pelembab secara rutin, hindari sabun keras.", 
+              "Don't": "Jangan menggaruk kulit yang gatal."},
+    "Gigitan Serangga": {"Do": "Cuci area gigitan, gunakan krim anti gatal.", 
+                         "Don't": "Jangan digaruk atau dicubit terlalu keras."},
+    "Jerawat": {"Do": "Cuci muka dua kali sehari, gunakan obat topikal.", 
+                "Don't": "Jangan memencet jerawat."},
+    "Kandidiasis (Infeksi Jamur Candida)": {"Do": "Jaga area tetap kering dan bersih.", 
+                                           "Don't": "Jangan memakai pakaian lembap terlalu lama."},
+    "Kanker Kulit": {"Do": "Segera konsultasikan ke dokter kulit.", 
+                     "Don't": "Jangan mengabaikan luka atau benjolan baru."},
+    "Keratosis Seboroik": {"Do": "Gunakan pelembab, konsultasi dermatolog.", 
+                           "Don't": "Jangan mencoba mengelupas sendiri."},
+    "Kurap": {"Do": "Oleskan obat antijamur sesuai resep.", 
+              "Don't": "Jangan berbagi pakaian atau handuk."},
+    "Psoriasis": {"Do": "Gunakan krim yang diresepkan dokter, mandi air hangat.", 
+                  "Don't": "Jangan stres berlebihan dan garuk kulit."},
+    "Tumor Jinak Kulit": {"Do": "Pantau pertumbuhan, konsultasi dokter jika berubah.", 
+                           "Don't": "Jangan dioperasi sendiri atau dipencet."},
+    "Vitiligo": {"Do": "Gunakan tabir surya, ikuti terapi dokter.", 
+                 "Don't": "Jangan paparan sinar matahari berlebihan."}
 }
 
 # =======================
@@ -96,7 +93,7 @@ if selected == "Home":
     <style>
     @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;700&display=swap');
     body {background-color: #FFF4E1; font-family: 'Poppins', sans-serif;}
-    .centered {display: flex; flex-direction: column; justify-content: center; align-items: center; height: 70vh; text-align: center; overflow: hidden; position: relative;}
+    .centered {display: flex; flex-direction: column; justify-content: center; align-items: center; height: 80vh; text-align: center; overflow: hidden; position: relative;}
     .logo-text {font-size: 70px; font-weight: 800; background: linear-gradient(90deg, #A0522D, #D2B48C); -webkit-background-clip: text; -webkit-text-fill-color: transparent; letter-spacing: 3px; opacity: 0; animation: blurFadeIn 3s ease-in-out forwards; animation-delay: 1.5s;}
     .slogan {font-size: 22px; color: #5C4033; margin-top: 20px; font-weight: bold; opacity: 0; animation: blurFadeIn 3s ease-in-out forwards; animation-delay: 3.5s;}
     .welcome {font-size: 42px; font-weight: bold; color: #5C4033; animation: blurFadeIn 3s ease-in-out;}
@@ -133,16 +130,14 @@ elif selected == "Classification":
         pred = model.predict(img_array)
         class_idx = np.argmax(pred)
         confidence = pred[0][class_idx]
-        st.success(f"Prediksi: **{classes[class_idx]}**")
+        disease = classes[class_idx]
+        st.success(f"Prediksi: **{disease}**")
         st.info(f"Confidence: {confidence*100:.2f}%")
 
-        # =======================
         # DO & DON'T
-        # =======================
-        disease = classes[class_idx]
-        st.markdown("### 💡 Tips Perawatan")
+        st.subheader("💡 Tips Perawatan")
         st.markdown(f"**Do:** {tips[disease]['Do']}")
-        st.markdown(f"**Don't:** {tips[disease]['Don't']}")
+        st.markdown(f"**Don't:** {tips[disease][\"Don't\"]}")
 
 # =======================
 # KRITIK & SARAN PAGE
@@ -175,4 +170,3 @@ elif selected == "About Us":
     **SKINFIRST** dibuat oleh tim PKM Universitas Diponegoro.  
     Sistem Deteksi Dini Penyakit Kulit Masyarakat Indonesia ❤️🩺👩‍⚕️👨‍⚕️  
     """)
-
