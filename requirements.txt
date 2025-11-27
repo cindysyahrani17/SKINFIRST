@@ -2,3 +2,5 @@ streamlit
 tensorflow
 gdown
 numpy
+pillow
+streamlit_option_menu
