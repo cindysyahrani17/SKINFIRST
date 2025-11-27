@@ -44,16 +44,13 @@ def preprocess(img):
 # =======================
 # SIDEBAR MENU
 # =======================
-from streamlit_option_menu import option_menu
-from streamlit_option_menu import option_menu
-
 selected = option_menu(
     menu_title="⚙️ SKINFIRST Menu",
     options=["Home", "Classification", "Kritik & Saran", "About Us"],
     icons=["house", "folder", "pencil", "info-circle"],
     menu_icon="cast",
     default_index=0,
-    orientation="vertical",  # sidebar mode
+    orientation="vertical",
     styles={
         "container": {"padding": "0!important", "background-color": "#ffffff"},
         "icon": {"color": "black", "font-size": "18px"},
@@ -61,18 +58,6 @@ selected = option_menu(
         "nav-link-selected": {"background-color": "#A3672E", "color": "white", "font-weight": "bold"},
     }
 )
-
-    # =======================
-    # Sidebar menu option
-    # =======================
-    selected = option_menu(
-        menu_title=None,
-        options=["Home", "Classification", "Kritik & Saran", "About Us"],
-        icons=["house", "folder", "pencil", "info-circle"],
-        menu_icon="cast",
-        default_index=0,
-    )
-
 
 # =======================
 # HOME PAGE
