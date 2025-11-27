@@ -1,13 +1,10 @@
 import streamlit as st
-from streamlit.components.v1 import html
 from tensorflow.keras.models import load_model
 from tensorflow.keras.preprocessing import image
 import numpy as np
 
-st.set_page_config(page_title="SKINFIRST", page_icon="🧴")
-
 # =======================
-# Path & Model
+# Path model
 # =======================
 MODEL_PATH = "skin10_mobilenet.keras"
 
@@ -19,65 +16,64 @@ def load_skin_model():
 model = load_skin_model()
 
 # =======================
-# Sidebar Menu
+# Sidebar menu
 # =======================
 menu = ["Home", "Classification", "Kritik & Saran", "About Us"]
 choice = st.sidebar.selectbox("Menu", menu)
 
 # =======================
-# Home with Transition
+# Home dengan animasi blur
 # =======================
 if choice == "Home":
-    st.header("")  # kosong dulu biar layout rapi
-
-    # HTML + CSS + JS untuk animasi blur + fade in
-    home_html = """
+    st.components.v1.html("""
+    <html>
+    <head>
     <style>
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;700&display=swap');
         body {
-            background-color: #fff5e6;
-            font-family: 'Arial', sans-serif;
+            background-color: #FFF4E1;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 90vh;
+            font-family: 'Poppins', sans-serif;
+            color: #333;
         }
         .container {
             text-align: center;
-            margin-top: 100px;
+            animation: fadeIn 3s ease forwards;
         }
-        h1 {
-            font-size: 70px;
-            color: #d2691e;
-            filter: blur(10px);
+        .title {
+            font-size: 5em;
+            font-weight: 700;
+            color: #FF8C42;
             opacity: 0;
-            transition: filter 1s ease, opacity 1s ease;
+            animation: blurFade 2s 0.5s forwards;
         }
-        p {
-            font-size: 24px;
-            color: #555;
-            filter: blur(5px);
+        .subtitle {
+            font-size: 1.5em;
+            margin-top: 20px;
             opacity: 0;
-            transition: filter 1s ease, opacity 1s ease;
+            animation: blurFade 2s 2.5s forwards;
+        }
+        @keyframes blurFade {
+            0% { opacity:0; filter: blur(10px); }
+            100% { opacity:1; filter: blur(0); }
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
         }
     </style>
-
-    <div class="container">
-        <h1 id="title">SKINFIRST</h1>
-        <p id="desc">Aplikasi AI untuk membantu mengklasifikasi penyakit kulit 💉🩺</p>
-    </div>
-
-    <script>
-        // Step 1: muncul title
-        setTimeout(() => {
-            document.getElementById("title").style.filter = "blur(0px)";
-            document.getElementById("title").style.opacity = "1";
-        }, 500);
-
-        // Step 2: muncul deskripsi setelah title muncul
-        setTimeout(() => {
-            document.getElementById("desc").style.filter = "blur(0px)";
-            document.getElementById("desc").style.opacity = "1";
-        }, 1500);
-    </script>
-    """
-
-    html(home_html, height=400)
+    </head>
+    <body>
+        <div class="container">
+            <div class="title">SKINFIRST 🩺</div>
+            <div class="subtitle">Aplikasi AI untuk membantu deteksi penyakit kulit secara dini</div>
+        </div>
+    </body>
+    </html>
+    """, height=600)
 
 # =======================
 # Classification
@@ -89,11 +85,13 @@ elif choice == "Classification":
     if uploaded_file is not None:
         st.image(uploaded_file, caption='Gambar Anda', use_column_width=True)
         
+        # Preprocessing
         img = image.load_img(uploaded_file, target_size=(224,224))
         img_array = image.img_to_array(img)
         img_array = np.expand_dims(img_array, axis=0)
         img_array /= 255.0
         
+        # Prediksi
         pred = model.predict(img_array)
         classes = ["Eksim", "Gigitan Serangga", "Jerawat",
                    "Kandidiasis (Infeksi Jamur Candida)", "Kanker Kulit",
@@ -112,7 +110,7 @@ elif choice == "Kritik & Saran":
     st.header("Kritik & Saran")
     feedback = st.text_area("Tulis kritik atau saran Anda di sini:")
     if st.button("Kirim"):
-        st.success("Terima kasih atas kritik & saran Anda!")
+        st.success("Terima kasih atas kritik & saran Anda! 😊")
 
 # =======================
 # About Us
@@ -121,5 +119,6 @@ elif choice == "About Us":
     st.header("About Us")
     st.write("""
         SKINFIRST dibuat oleh tim PKM UNDIP.  
-        Tujuannya adalah membantu masyarakat dalam mendeteksi penyakit kulit secara dini menggunakan AI. 💻🧴
+        Tujuannya membantu masyarakat mendeteksi penyakit kulit secara dini menggunakan AI.  
+        ❤️👩‍⚕️👨‍⚕️
     """)
