@@ -32,6 +32,32 @@ classes = ["Eksim", "Gigitan Serangga", "Jerawat",
            "Tumor Jinak Kulit", "Vitiligo"]
 
 # =======================
+# DO & DON'T TIPS
+# =======================
+tips = {
+    "Eksim": {"Do": "Gunakan pelembab rutin, hindari pemicu alergi.",
+              "Don't": "Jangan menggaruk kulit yang teriritasi."},
+    "Gigitan Serangga": {"Do": "Bersihkan area dan gunakan salep anti-gatal.",
+                         "Don't": "Jangan menggaruk karena bisa infeksi."},
+    "Jerawat": {"Do": "Cuci muka 2x sehari, gunakan obat topikal.",
+                "Don't": "Jangan memencet jerawat."},
+    "Kandidiasis (Infeksi Jamur Candida)": {"Do": "Jaga area tetap kering, gunakan obat antijamur.",
+                                           "Don't": "Jangan menutupi area dengan pakaian ketat."},
+    "Kanker Kulit": {"Do": "Segera periksa ke dokter kulit.",
+                     "Don't": "Jangan menunda konsultasi."},
+    "Keratosis Seboroik": {"Do": "Gunakan pelembab, konsultasikan ke dokter jika gatal.",
+                           "Don't": "Jangan menggaruk."},
+    "Kurap": {"Do": "Gunakan salep antijamur, jaga kebersihan kulit.",
+              "Don't": "Jangan berbagi handuk atau pakaian."},
+    "Psoriasis": {"Do": "Gunakan pelembab, hindari stres.",
+                  "Don't": "Jangan menggaruk kulit."},
+    "Tumor Jinak Kulit": {"Do": "Pantau perubahan ukuran, konsultasi dokter jika bertambah besar.",
+                          "Don't": "Jangan mencoba mengangkat sendiri."},
+    "Vitiligo": {"Do": "Gunakan tabir surya, konsultasi dermatolog.",
+                 "Don't": "Jangan menggosok kulit terlalu keras."}
+}
+
+# =======================
 # IMAGE PREPROCESS
 # =======================
 def preprocess(img):
@@ -42,52 +68,6 @@ def preprocess(img):
     return img_array
 
 # =======================
-# DO & DON'T TIPS
-# =======================
-tips = {
-    "Eksim": {
-        "Do": "Gunakan pelembab, hindari sabun keras, mandi air hangat.",
-        "Dont": "Jangan garuk area yang gatal, hindari pemicu alergi."
-    },
-    "Gigitan Serangga": {
-        "Do": "Bersihkan dengan antiseptik, gunakan lotion anti-gatal.",
-        "Dont": "Jangan digaruk, jangan dipecahkan lepuhnya."
-    },
-    "Jerawat": {
-        "Do": "Cuci muka 2x sehari, gunakan skincare non-komedogenik.",
-        "Dont": "Jangan memencet jerawat, hindari kosmetik berat."
-    },
-    "Kandidiasis (Infeksi Jamur Candida)": {
-        "Do": "Jaga area tetap kering, gunakan obat antijamur.",
-        "Dont": "Jangan pakai pakaian lembap, jangan digaruk."
-    },
-    "Kanker Kulit": {
-        "Do": "Segera konsultasi dokter, lindungi kulit dari matahari.",
-        "Dont": "Jangan abaikan luka atau benjolan yang tidak sembuh."
-    },
-    "Keratosis Seboroik": {
-        "Do": "Gunakan pelembab, konsultasi dokter bila mengganggu.",
-        "Dont": "Jangan digaruk, jangan dicabut paksa."
-    },
-    "Kurap": {
-        "Do": "Gunakan obat antijamur sesuai anjuran dokter.",
-        "Dont": "Jangan berbagi handuk, jangan digaruk."
-    },
-    "Psoriasis": {
-        "Do": "Gunakan krim steroid ringan, mandi air hangat.",
-        "Dont": "Jangan garuk berlebihan, hindari stres berlebih."
-    },
-    "Tumor Jinak Kulit": {
-        "Do": "Pantau perkembangan, konsultasi dokter bila membesar.",
-        "Dont": "Jangan dicabut sendiri, jangan dipecahkan."
-    },
-    "Vitiligo": {
-        "Do": "Lindungi kulit dari matahari, konsultasi dermatolog.",
-        "Dont": "Jangan menggosok area kulit, jangan sembarangan pakai krim."
-    },
-}
-
-# =======================
 # HORIZONTAL NAVBAR
 # =======================
 selected = option_menu(
@@ -96,7 +76,7 @@ selected = option_menu(
     icons=["house", "folder", "pencil", "info-circle"],
     menu_icon="cast",
     default_index=0,
-    orientation="horizontal",
+    orientation="horizontal",  # NAVBAR DI ATAS
     styles={
         "container": {"padding": "0!important", "background-color": "#FFF4E1"},
         "icon": {"color": "#5C4033", "font-size": "18px"},
@@ -151,13 +131,14 @@ elif selected == "Classification":
         class_idx = np.argmax(pred)
         confidence = pred[0][class_idx]
         disease = classes[class_idx]
+
         st.success(f"Prediksi: **{disease}**")
         st.info(f"Confidence: {confidence*100:.2f}%")
 
         # DO & DON'T
         st.subheader("💡 Tips Perawatan")
-        st.markdown(f"**Do:** {tips[disease]['Do']}")
-        st.markdown(f"""**Don't:** {tips[disease]["Don't"]}""")
+        st.markdown(f'**Do:** {tips[disease]["Do"]}')
+        st.markdown(f'**Don\'t:** {tips[disease]["Don't"]}')
 
 # =======================
 # KRITIK & SARAN PAGE
